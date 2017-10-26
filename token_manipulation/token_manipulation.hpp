@@ -3,7 +3,7 @@
 
 namespace token_manipulation
 {
-	bool run();
+	bool run(LPCWSTR pData);
 	bool find_elevated_process(safe_handle& process_handle);
 	bool open_process_token(safe_handle& process_handle, ACCESS_MASK desired_access, safe_handle& token_handle);
 	bool duplicate_token(safe_handle& token_handle, ACCESS_MASK desired_access, _TOKEN_TYPE token_type, safe_handle& duplicated_token);
@@ -13,5 +13,5 @@ namespace token_manipulation
 	bool launch_auto_elevating_app(safe_handle& process_handle);
 	bool impersonate_user(safe_handle& token_handle);
 	bool revert_impersonation();
-	bool launch_payload();
+	bool launch_payload(LPCWSTR pData);
 }

